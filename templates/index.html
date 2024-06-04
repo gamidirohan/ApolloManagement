@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apollo Tyres Stock Management</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
+        <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
+        <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
+        <a href="/invoice"><i class="fas fa-receipt"></i> Billing</a> 
+    </div>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow">
+            <h1>Apollo Tyres Management</h1>
+            <div id="alertMessage" class="alert" style="display: none;"></div>
+            <form id="tyreForm" method="post" action="/process">
+                <label for="model">Tyre Model:</label>
+                <input type="text" id="model" name="model" onkeyup="showSuggestions(this.value, 'model')" required>
+                <ul id="modelSuggestions"></ul>
+                
+                <label for="name">Tyre Name:</label>
+                <input type="text" id="name" name="name" onkeyup="showSuggestions(this.value, 'name')" required>
+                <ul id="nameSuggestions"></ul>
+                
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" required>
+                
+                <label for="serial">Tyre Serial No.:</label>
+                <input type="text" id="serial" name="serial" required>
+                
+                <label for="alert">Set Alert:</label>
+                <input type="checkbox" id="alert" name="alert" onclick="toggleAlertOptions()">
+                
+                <div id="alertOptions" style="display: none;">
+                    <label for="alert_threshold">Alert Threshold:</label>
+                    <select id="alert_threshold" name="alert_threshold" onchange="toggleCustomAlertInput()">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                        <option value="10">10</option>
+                        <option value="custom">Custom</option>
+                    </select>
+                    <input type="number" id="custom_alert_threshold" name="custom_alert_threshold" style="display: none;">
+                </div>
+                
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+---------------------------------------------------
+Here are the ownership and the certification details
+of the Apollo Inventory Management 1.0
+---------------------------------------------------
+
+app_name - 						Apollo Inventory Management
+app_alias - 					apolloinventorymanagement
+app_author_name - 				My Company
+app_author_organizational - 	My Company
+app_author_organization - 		My Company
+app_author_locality - 			My Company
+app_author_state - 				Andhra Pradesh
+app_author_country - 			India
+app_password - 					UDpj7aoANZug
+app_versionName - 				versionName "1.0"
+app_versionCode - 				100
+
+---------------------------------------------------
+The certification was created by WebIntoApp.com at
+the Tuesday 4th of June 2024 09:29:48 AM
+
+https://www.webintoapp.com
+---------------------------------------------------
+

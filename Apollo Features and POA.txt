@@ -1,0 +1,20 @@
+Features:
+1. Stock Availability
+	- Viewing
+	- Update
+	- UI (Webpage)
+	- Link with QR
+	- Alerts
+
+2. Billing
+	- Printing after Order
+	- Bill includes:
+		Check format from Screenshot 
+		Discounts
+		Warranty Code (MFD) (DONT PRINT, ONLY UPDATE DB)
+	- Save to DB
+	- >50K transaction, E- Way Bill
+	- Credit (Alerts, for regular intervals (options for 10D, 1M, etc.,))
+	
+
+POA:
