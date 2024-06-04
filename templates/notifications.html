@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications - Apollo Tyres</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
+        <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
+        <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
+    </div>
+    <div class="card shadow">
+        <h1>Inventory Notifications</h1>
+        <div id="notifications">
+            <!-- Notifications will be loaded here by script.js -->
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>

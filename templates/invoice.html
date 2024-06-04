@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Invoice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
+        <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
+        <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
+    </div>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow">
+            <h1>Create Invoice</h1>
+            <form id="invoiceForm" method="post" action="generate_bill.php">
+                <label for="invoiceNo">Invoice No.:</label>
+                <input type="text" id="invoiceNo" name="invoiceNo" required>
+
+                <label for="invoiceDate">Invoice Date:</label>
+                <input type="date" id="invoiceDate" name="invoiceDate" required>
+
+                <label for="dueDate">Due Date:</label>
+                <input type="date" id="dueDate" name="dueDate" required>
+
+                <h3>Bill To:</h3>
+                <label for="billToName">Name:</label>
+                <input type="text" id="billToName" name="billToName" required>
+
+                <label for="billToAddress">Address:</label>
+                <input type="text" id="billToAddress" name="billToAddress" required>
+
+                <label for="billToMobile">Mobile Number:</label>
+                <input type="text" id="billToMobile" name="billToMobile" required>
+
+                <label for="shipToSame">Ship to Same as Bill To:</label>
+                <input type="checkbox" id="shipToSame" name="shipToSame" onclick="copyBillTo()">
+
+                <h3>Ship To:</h3>
+                <label for="shipToName">Name:</label>
+                <input type="text" id="shipToName" name="shipToName" required>
+
+                <label for="shipToAddress">Address:</label>
+                <input type="text" id="shipToAddress" name="shipToAddress" required>
+
+                <label for="shipToMobile">Mobile Number:</label>
+                <input type="text" id="shipToMobile" name="shipToMobile" required>
+
+                <h3>Items:</h3>
+                <div id="itemsContainer">
+                    <div class="item">
+                        <label for="model">Model:</label>
+                        <input type="text" id="model" name="model[]" onkeyup="showSuggestions(this.value, 'model')" required>
+                        <ul id="modelSuggestions"></ul>
+
+                        <label for="hsn">HSN:</label>
+                        <input type="text" id="hsn" name="hsn[]" readonly>
+
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name[]" onkeyup="showSuggestions(this.value, 'name')" required>
+                        <ul id="nameSuggestions"></ul>
+
+                        <label for="serial">Serial:</label>
+                        <select id="serial" name="serial[]"></select>
+
+                        <label for="qty">Qty:</label>
+                        <select id="qty" name="qty[]" onchange="toggleCustomQty(this)">
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="4">4</option>
+                            <option value="custom">Custom</option>
+                        </select>
+                        <input type="number" id="customQty" name="customQty[]" style="display: none;">
+
+                        <label for="rate">Rate:</label>
+                        <input type="text" id="rate" name="rate[]" readonly>
+
+                        <label for="tax">Tax:</label>
+                        <input type="radio" id="tax12" name="tax[]" value="12"> 12%
+                        <input type="radio" id="tax14" name="tax[]" value="14"> 14%
+                        <input type="radio" id="tax18" name="tax[]" value="18"> 18%
+
+                        <label for="discount">Discount:</label>
+                        <input type="number" id="discount" name="discount[]">
+
+                        <label for="amount">Amount:</label>
+                        <input type="text" id="amount" name="amount[]" readonly>
+                    </div>
+                </div>
+                <button type="button" onclick="addItem()">Add Item</button>
+
+                <hr>
+
+                <label for="amountPaid">Amount Paid:</label>
+                <input type="text" id="amountPaid" name="amountPaid" required>
+
+                <input type="submit" value="Submit">
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

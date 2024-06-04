@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory - Apollo Tyres</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
+        <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
+        <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
+    </div>
+    <div class="d-flex justify-content-center align-items-center vh-100">
+        <div class="card shadow">
+            <h1>Current Inventory</h1>
+            <div class="search-bar">
+                <input type="text" id="searchModel" placeholder="Search Model">
+                <input type="text" id="searchName" placeholder="Search Name">
+                <input type="text" id="searchSerial" placeholder="Search Serial">
+                <input type="number" id="searchQuantity" placeholder="Search Quantity">
+                <button onclick="searchInventory()">Search</button>
+            </div>
+            <div id="searchResults"></div>
+            <table id="inventoryTable">
+                <thead>
+                    <tr>
+                        <th>Model</th>
+                        <th>Name</th>
+                        <th>Serial</th>
+                        <th>Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Inventory data will be loaded here by script.js -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+</body>
+</html>
