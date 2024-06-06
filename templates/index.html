@@ -11,7 +11,7 @@
         <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
         <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
         <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
-        <a href="/invoice"><i class="fas fa-receipt"></i> Billing</a> 
+        <a href="/billing" class="nav-item" onclick="navigate(event, '/billing')">🧾</a>
     </div>
     <div class="d-flex justify-content-center align-items-center vh-100">
         <div class="card shadow">
@@ -25,6 +25,10 @@
                 <label for="name">Tyre Name:</label>
                 <input type="text" id="name" name="name" onkeyup="showSuggestions(this.value, 'name')" required>
                 <ul id="nameSuggestions"></ul>
+
+                <label for="HSN">HSN number</label>
+                <input type="text" id="HSN" name="HSN" onkeyup="showSuggestions(this.value, 'HSN')" required>
+                <ul id="HSNSuggestions"></ul>
                 
                 <label for="quantity">Quantity:</label>
                 <input type="number" id="quantity" name="quantity" required>

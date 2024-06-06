@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        .form-container, .table-container {
+            margin: 20px auto;
+            max-width: 600px;
+            background: white;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .form-container input, .form-container button {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin: 10px 0;
+        }
+        .form-container button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+        }
+        .table-container table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .table-container th, .table-container td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        .table-container th {
+            background-color: #007bff;
+            color: white;
+        }
+        .table-container td {
+            background-color: #f9f9f9;
+        }
+        .delete-btn {
+            color: red;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+<h1>User Management</h1>
+
+<div class="navbar">
+    <a href="/" class="nav-item" onclick="navigate(event, '/')">🏠</a>
+    <a href="/notifications" class="nav-item" onclick="navigate(event, '/notifications')">🔔</a>
+    <a href="/inventory" class="nav-item" onclick="navigate(event, '/inventory')">📊</a>
+    <a href="/billing" class="nav-item" onclick="navigate(event, '/billing')">🧾</a>
+</div>
+
+<div class="form-container">
+    <form id="userForm">
+        <input type="text" id="username" name="username" placeholder="Username" required>
+        <input type="email" id="email" name="email" placeholder="Email" required>
+        <input type="password" id="password" name="password" placeholder="Password" required>
+        <button type="submit">Add User</button>
+    </form>
+</div>
+
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody">
+            <!-- User rows will be populated here -->
+        </tbody>
+    </table>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const userForm = document.getElementById('userForm');
+        const userTableBody = document.getElementById('userTableBody');
+
+        // Fetch and display users
+        fetch('/fetch_users')
+            .then(response => response.json())
+            .then(data => {
+                data.forEach(user => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${user.id}</td>
+                        <td>${user.username}</td>
+                        <td>${user.email}</td>
+                        <td><span class="delete-btn" data-id="${user.id}">Delete</span></td>
+                    `;
+                    userTableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching users:', error));
+
+        // Handle form submission
+        userForm.addEventListener('submit', event => {
+            event.preventDefault();
+            const formData = new FormData(userForm);
+            
+            fetch('/add_user', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.text())
+            .then(data => {
+                alert(data);
+                userForm.reset();
+                // Optionally refresh the user list
+            })
+            .catch(error => console.error('Error adding user:', error));
+        });
+
+        // Handle delete user
+        userTableBody.addEventListener('click', event => {
+            if (event.target.classList.contains('delete-btn')) {
+                const userId = event.target.dataset.id;
+                fetch(`/delete_user?id=${userId}`, {
+                    method: 'DELETE'
+                })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    // Optionally remove the row from the table
+                    event.target.closest('tr').remove();
+                })
+                .catch(error => console.error('Error deleting user:', error));
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

@@ -38,10 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'amount' => $_POST['amount'][$index]
         ];
     }
-
-    // Save the invoice data to the database (optional)
-    // ...
-
+    
     // Generate the bill using the provided bill.html template
     ob_start();
     include 'bill_template.php';

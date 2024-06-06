@@ -1,0 +1,23 @@
+Features:
+1. Attendance for Cashier
+	- Name, Time, Sale (During duty time)
+
+2. Person UI, and Logic:
+	- Start for Person (k): Last Complete Sale
+	- End for Person (k): Total Sale - LCS
+
+	- Scan Bill, and Update with ML (optional)
+	- or, Input by text
+
+3. Payments: (by Person)
+	- PhonePay
+	- Cash
+	- Credits
+	add logs at end of work session
+
+
+
+
+Owner UI:
+1. Verfication Page (Images against Text)
+2. Credits Viewing/ Update

@@ -1,11 +1,50 @@
 document.addEventListener('DOMContentLoaded', () => {
-    // Add event listeners and other initialization code here
     const modelSuggestions = document.getElementById('modelSuggestions');
     const nameSuggestions = document.getElementById('nameSuggestions');
     const tyreForm = document.getElementById('tyreForm');
     const alertCheckbox = document.getElementById('alert');
     const alertOptions = document.getElementById('alertOptions');
     const customAlertThreshold = document.getElementById('custom_alert_threshold');
+    const shipToSameCheckbox = document.getElementById('ship_to_same');
+    const billToFields = ['bill_to_name', 'bill_to_address', 'bill_to_mobile'];
+    const shipToFields = ['ship_to_name', 'ship_to_address', 'ship_to_mobile'];
+
+    if (shipToSameCheckbox) {
+        shipToSameCheckbox.addEventListener('change', () => {
+            if (shipToSameCheckbox.checked) {
+                shipToFields.forEach((field, index) => {
+                    const billToFieldElement = document.getElementById(billToFields[index]);
+                    const shipToFieldElement = document.getElementById(field);
+                    if (billToFieldElement && shipToFieldElement) {
+                        shipToFieldElement.value = billToFieldElement.value;
+                        shipToFieldElement.readOnly = true;
+                    }
+                });
+            } else {
+                shipToFields.forEach((field) => {
+                    const shipToFieldElement = document.getElementById(field);
+                    if (shipToFieldElement) {
+                        shipToFieldElement.value = '';
+                        shipToFieldElement.readOnly = false;
+                    }
+                });
+            }
+        });
+    }
+
+    const quantityElement = document.getElementById('quantity');
+    if (quantityElement) {
+        quantityElement.addEventListener('change', (event) => {
+            const customQuantity = document.getElementById('custom_quantity');
+            if (customQuantity) {
+                if (event.target.value === 'custom') {
+                    customQuantity.style.display = 'block';
+                } else {
+                    customQuantity.style.display = 'none';
+                }
+            }
+        });
+    }
 
     if (modelSuggestions) {
         modelSuggestions.addEventListener('click', function(e) {
@@ -34,35 +73,46 @@ document.addEventListener('DOMContentLoaded', () => {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.text())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.text();
+            })
             .then(data => {
                 showAlert(data);
                 this.reset();
-                modelSuggestions.innerHTML = '';
-                nameSuggestions.innerHTML = '';
+                if (modelSuggestions) modelSuggestions.innerHTML = '';
+                if (nameSuggestions) nameSuggestions.innerHTML = '';
                 hideAlertOptions(); // Hide alert options after form submission
             })
             .catch(error => {
                 console.error('Error:', error);
             });
         });
-    }
+    }    
 
-    if (document.getElementById('notifications')) {
+    const notificationsDiv = document.getElementById('notifications');
+    if (notificationsDiv) {
         fetch('/fetch_notifications')
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
-            let notificationsDiv = document.getElementById('notifications');
             notificationsDiv.innerHTML = '';
-            
+
             data.forEach(notification => {
                 let div = document.createElement('div');
                 div.className = 'notification';
                 div.innerHTML = `
                     <strong>Model:</strong> ${notification.model}<br>
                     <strong>Name:</strong> ${notification.name}<br>
-                    <strong>Serial:</strong> ${notification.serial}<br>
+                    <strong>HSN:</strong> ${notification.HSN}<br>
                     <strong>Quantity:</strong> ${notification.quantity}<br>
+                    <strong>Serial:</strong> ${notification.serial}<br>
                     <strong>Alert Threshold:</strong> ${notification.alert_threshold}<br>
                     <strong>Last Alerted:</strong> ${notification.last_alerted}<br>
                 `;
@@ -71,14 +121,16 @@ document.addEventListener('DOMContentLoaded', () => {
         })
         .catch(error => {
             console.error('Error:', error);
+            notificationsDiv.innerHTML = '<p>Error loading notifications. Please try again later.</p>';
         });
     }
 
-    if (document.getElementById('inventoryTable')) {
+    const inventoryTable = document.getElementById('inventoryTable');
+    if (inventoryTable) {
         fetch('/fetch_inventory')
         .then(response => response.json())
         .then(data => {
-            let inventoryTableBody = document.getElementById('inventoryTable').getElementsByTagName('tbody')[0];
+            let inventoryTableBody = inventoryTable.getElementsByTagName('tbody')[0];
             inventoryTableBody.innerHTML = '';
             
             data.forEach(item => {
@@ -98,11 +150,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (alertCheckbox) {
-        alertCheckbox.addEventListener('click', toggleAlertOptions);
+        alertThresholdElement.addEventListener('change', toggleCustomAlertInput);
     }
 
     if (alertOptions) {
-        document.getElementById('alert_threshold').addEventListener('change', toggleCustomAlertInput);
+        const alertThresholdElement = document.getElementById('alert_threshold');
+        if (alertThresholdElement) {
+            alertCheckbox.addEventListener('click', toggleAlertOptions);
+        }
     }
 });
 
@@ -117,21 +172,21 @@ function copyBillTo() {
     const shipToMobile = document.getElementById('shipToMobile');
 
     if (shipToSame) {
-        shipToName.value = billToName;
-        shipToAddress.value = billToAddress;
-        shipToMobile.value = billToMobile;
+        if (shipToName) shipToName.value = billToName;
+        if (shipToAddress) shipToAddress.value = billToAddress;
+        if (shipToMobile) shipToMobile.value = billToMobile;
 
-        shipToName.readOnly = true;
-        shipToAddress.readOnly = true;
-        shipToMobile.readOnly = true;
+        if (shipToName) shipToName.readOnly = true;
+        if (shipToAddress) shipToAddress.readOnly = true;
+        if (shipToMobile) shipToMobile.readOnly = true;
     } else {
-        shipToName.value = '';
-        shipToAddress.value = '';
-        shipToMobile.value = '';
+        if (shipToName) shipToName.value = '';
+        if (shipToAddress) shipToAddress.value = '';
+        if (shipToMobile) shipToMobile.value = '';
 
-        shipToName.readOnly = false;
-        shipToAddress.readOnly = false;
-        shipToMobile.readOnly = false;
+        if (shipToName) shipToName.readOnly = false;
+        if (shipToAddress) shipToAddress.readOnly = false;
+        if (shipToMobile) shipToMobile.readOnly = false;
     }
 }
 
@@ -192,109 +247,49 @@ function addItem() {
         <input type="text" id="name" name="name[]" onkeyup="showSuggestions(this.value, 'name')" required>
         <ul id="nameSuggestions"></ul>
 
-        <label for="serial">Serial:</label>
-        <select id="serial" name="serial[]"></select>
-
-        <label for="qty">Qty:</label>
-        <select id="qty" name="qty[]" onchange="toggleCustomQty(this)">
+        <label for="quantity">Quantity:</label>
+        <select id="quantity" name="quantity[]" onchange="toggleCustomQty(this)" required>
             <option value="1">1</option>
             <option value="2">2</option>
-            <option value="4">4</option>
             <option value="custom">Custom</option>
         </select>
-        <input type="number" id="customQty" name="customQty[]" style="display: none;">
+        <input type="number" id="custom_quantity" name="custom_quantity[]" style="display:none;" min="1">
 
-        <label for="rate">Rate:</label>
-        <input type="text" id="rate" name="rate[]" readonly>
-
-        <label for="tax">Tax:</label>
-        <input type="radio" id="tax12" name="tax[]" value="12"> 12%
-        <input type="radio" id="tax14" name="tax[]" value="14"> 14%
-        <input type="radio" id="tax18" name="tax[]" value="18"> 18%
-
-        <label for="discount">Discount:</label>
-        <input type="number" id="discount" name="discount[]">
-
-        <label for="amount">Amount:</label>
-        <input type="text" id="amount" name="amount[]" readonly>
+        <label for="serial">Serial:</label>
+        <input type="text" id="serial" name="serial[]" required>
     `;
     itemsContainer.appendChild(newItem);
 }
 
-function showAlert(message) {
-    let alertDiv = document.getElementById('alertMessage');
-    alertDiv.textContent = message;
-    alertDiv.style.display = 'block';
-    
-    setTimeout(() => {
-        alertDiv.style.display = 'none';
-    }, 5000);
-}
-
-function navigate(event, url) {
-    event.preventDefault();
-    setTimeout(() => {
-        window.location.href = url;
-    }, 250);
-}
-
 function toggleAlertOptions() {
     const alertOptions = document.getElementById('alertOptions');
-    if (document.getElementById('alert').checked) {
-        alertOptions.style.display = 'block';
-    } else {
-        alertOptions.style.display = 'none';
-        document.getElementById('custom_alert_threshold').style.display = 'none';
+    if (alertOptions) {
+        alertOptions.style.display = alertOptions.style.display === 'none' ? 'block' : 'none';
     }
 }
 
 function toggleCustomAlertInput() {
     const customAlertThreshold = document.getElementById('custom_alert_threshold');
-    if (document.getElementById('alert_threshold').value === 'custom') {
-        customAlertThreshold.style.display = 'block';
-    } else {
-        customAlertThreshold.style.display = 'none';
+    const alertThreshold = document.getElementById('alert_threshold');
+    if (customAlertThreshold && alertThreshold) {
+        customAlertThreshold.style.display = alertThreshold.value === 'custom' ? 'block' : 'none';
     }
 }
 
 function hideAlertOptions() {
     const alertOptions = document.getElementById('alertOptions');
-    const alertCheckbox = document.getElementById('alert');
-    const customAlertThreshold = document.getElementById('custom_alert_threshold');
-
-    alertOptions.style.display = 'none';
-    alertCheckbox.checked = false;
-    customAlertThreshold.style.display = 'none';
+    if (alertOptions) {
+        alertOptions.style.display = 'none';
+    }
 }
 
-function searchInventory() {
-    const searchModel = document.getElementById('searchModel').value.toLowerCase();
-    const searchName = document.getElementById('searchName').value.toLowerCase();
-    const searchSerial = document.getElementById('searchSerial').value.toLowerCase();
-    const searchQuantity = document.getElementById('searchQuantity').value;
+function showAlert(message) {
+    const alertDiv = document.createElement('div');
+    alertDiv.className = 'alert';
+    alertDiv.innerHTML = message;
+    document.body.appendChild(alertDiv);
 
-    fetch('/fetch_inventory')
-        .then(response => response.json())
-        .then(data => {
-            let searchResults = document.getElementById('searchResults');
-            searchResults.innerHTML = '';
-
-            data.forEach(item => {
-                if (
-                    (searchModel && item.model.toLowerCase().includes(searchModel)) ||
-                    (searchName && item.name.toLowerCase().includes(searchName)) ||
-                    (searchSerial && item.serial.toLowerCase().includes(searchSerial)) ||
-                    (searchQuantity && item.quantity == searchQuantity)
-                ) {
-                    let row = document.createElement('div');
-                    row.innerHTML = `
-                        <p>Model: ${item.model}, Name: ${item.name}, Serial: ${item.serial}, Quantity: ${item.quantity}</p>
-                    `;
-                    searchResults.appendChild(row);
-                }
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    setTimeout(() => {
+        alertDiv.remove();
+    }, 3000);
 }
