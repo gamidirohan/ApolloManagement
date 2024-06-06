@@ -12,7 +12,7 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-$sql = "SELECT model, name, quantity, alert_threshold, last_alerted FROM tyres WHERE alert_threshold IS NOT NULL AND quantity <= alert_threshold ORDER BY last_alerted DESC";
+$sql = "SELECT model, name, HSN, quantity, serial, alert_threshold, last_alerted FROM tyres WHERE alert_threshold IS NOT NULL AND quantity <= alert_threshold ORDER BY last_alerted DESC";
 $result = $conn->query($sql);
 
 $notifications = [];

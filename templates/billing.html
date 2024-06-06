@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{ url_for('static', filename='script.js') }}" defer></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            text-align: center;
+            font-size: 2em;
+            padding-top: 10%;
+        }
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 15px; /* Added border-radius for smooth corners */
+        }
+        form div {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"],
+        input[type="date"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+        }
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+        button {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            .nav-item {
+                font-size: 1em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/" class="nav-item">🏠</a>
+        <a href="/notifications" class="nav-item">🔔</a>
+        <a href="/inventory" class="nav-item">📊</a>
+        <a href="/billing" class="nav-item">🧾</a>
+    </div>
+    <div class="container">
+        <h1 style="padding-top: 4%;">Billing</h1>
+        <form id="billingForm" method="POST" action="/process_billing">
+            <div>
+                <label for="invoice_no">Invoice No:</label>
+                <input type="text" id="invoice_no" name="invoice_no" required>
+            </div>
+            <div>
+                <label for="invoice_date">Invoice Date:</label>
+                <input type="date" id="invoice_date" name="invoice_date" required>
+            </div>
+            <div>
+                <label for="due_date">Due Date:</label>
+                <input type="date" id="due_date" name="due_date" required>
+            </div>
+            <hr>
+            <h2>Bill To</h2>
+            <div>
+                <label for="bill_to_name">Name:</label>
+                <input type="text" id="bill_to_name" name="bill_to_name" required>
+            </div>
+            <div>
+                <label for="bill_to_address">Address:</label>
+                <input type="text" id="bill_to_address" name="bill_to_address" required>
+            </div>
+            <div>
+                <label for="bill_to_mobile">Mobile Number:</label>
+                <input type="text" id="bill_to_mobile" name="bill_to_mobile" required>
+            </div>
+            <div>
+                <input type="checkbox" id="ship_to_same" name="ship_to_same">
+                <label for="ship_to_same">Ship to Same as Bill To</label>
+            </div>
+            <hr>
+            <h2>Ship To</h2>
+            <div>
+                <label for="ship_to_name">Name:</label>
+                <input type="text" id="ship_to_name" name="ship_to_name" required>
+            </div>
+            <div>
+                <label for="ship_to_address">Address:</label>
+                <input type="text" id="ship_to_address" name="ship_to_address" required>
+            </div>
+            <div>
+                <label for="ship_to_mobile">Mobile Number:</label>
+                <input type="text" id="ship_to_mobile" name="ship_to_mobile" required>
+            </div>
+            <hr>
+            <h2>Items</h2>
+            <div>
+                <label for="model">Model:</label>
+                <input type="text" id="model" name="model" oninput="showSuggestions(this.value, 'model')" required>
+                <ul id="modelSuggestions"></ul>
+            </div>
+            <div>
+                <label for="hsn">HSN:</label>
+                <input type="text" id="hsn" name="hsn" readonly>
+            </div>
+            <div>
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" oninput="showSuggestions(this.value, 'name')" required>
+                <ul id="nameSuggestions"></ul>
+            </div>
+            <div>
+                <label for="serial">Serial:</label>
+                <select id="serial" name="serial" required></select>
+            </div>
+            <div>
+                <label for="quantity">Qty:</label>
+                <select id="quantity" name="quantity" required>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="4">4</option>
+                    <option value="custom">Custom</option>
+                </select>
+                <input type="number" id="custom_quantity" name="custom_quantity" style="display:none;">
+            </div>
+            <div>
+                <label for="rate">Rate:</label>
+                <input type="text" id="rate" name="rate" readonly>
+            </div>
+            <div>
+                <label for="tax">Tax:</label>
+                <input type="radio" id="tax_12" name="tax" value="12" required> 12%
+                <input type="radio" id="tax_14" name="tax" value="14" required> 14%
+                <input type="radio" id="tax_18" name="tax" value="18" required> 18%
+            </div>
+            <div>
+                <label for="discount">Discount:</label>
+                <input type="number" id="discount" name="discount">
+            </div>
+            <div>
+                <label for="amount">Amount:</label>
+                <input type="text" id="amount" name="amount" readonly>
+            </div>
+            <hr>
+            <div>
+                <label for="amount_paid">Amount Paid:</label>
+                <input type="number" id="amount_paid" name="amount_paid" required>
+            </div>
+            <div>
+                <label for="remaining_amount">Remaining Amount:</label>
+                <input type="text" id="remaining_amount" name="remaining_amount" readonly>
+            </div>
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
